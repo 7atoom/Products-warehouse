@@ -1,0 +1,78 @@
+<header class="bg-white shadow">
+  <nav class="max-w-7xl mx-auto px-4">
+    <div class="flex h-16 items-center justify-between">
+
+      <!-- Logo -->
+      <a
+        routerLink="/"
+        class="text-xl font-semibold text-gray-800 hover:text-blue-600"
+      >
+        Products Warehouse
+      </a>
+
+      <!-- Mobile menu button -->
+      <button
+        id="menu-btn"
+        class="md:hidden inline-flex items-center justify-center rounded-md p-2 text-gray-600 hover:bg-gray-100 focus:outline-none"
+        aria-label="Toggle menu"
+        (click)="toggleMenu()"
+      >
+        ☰
+      </button>
+
+      <!-- Desktop Menu -->
+      <ul class="hidden md:flex space-x-6">
+        <li>
+          <a
+            routerLink="/"
+            class="text-gray-700 hover:text-blue-600 font-medium"
+          >
+            Home
+          </a>
+        </li>
+        <li>
+          <a
+            routerLink="/products"
+            class="text-gray-700 hover:text-blue-600 font-medium"
+          >
+            Products
+          </a>
+        </li>
+        <li>
+          <a
+            routerLink="/about"
+            class="text-gray-700 hover:text-blue-600 font-medium"
+          >
+            About
+          </a>
+        </li>
+        <li>
+          <a
+            routerLink="/contact"
+            class="text-gray-700 hover:text-blue-600 font-medium"
+          >
+            Contact
+          </a>
+        </li>
+      </ul>
+    </div>
+
+    <!-- Mobile Menu -->
+    @if (isMenuOpen) {
+      <div id="mobile-menu" class="md:hidden pb-4">
+        <ul class="space-y-2">
+          <li>
+            <a routerLink="" class="block text-gray-700 hover:text-blue-600">
+              Home
+            </a>
+          </li>
+          <li>
+            <a routerLink="products" class="block text-gray-700 hover:text-blue-600">
+              Products
+            </a>
+          </li>
+        </ul>
+      </div>
+    }
+  </nav>
+</header>
