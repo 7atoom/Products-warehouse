@@ -1,1 +1,139 @@
-<p>products-list works!</p>
+<div class="bg-white rounded-lg border border-gray-200 p-6 overflow-hidden">
+  <div class="overflow-x-auto">
+    <table class="w-full">
+
+      <!-- Header -->
+      <thead class="bg-gray-50 border-b border-gray-200">
+      <tr>
+        <th [class]="thClass">Product</th>
+        <th [class]="thClass">PCode</th>
+        <th [class]="thClass">Category</th>
+        <th [class]="thClass">Location</th>
+        <th [class]="thClass">Quantity</th>
+        <th [class]="thClass">Price</th>
+        <th [class]="thClass">Status</th>
+        <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">Actions</th>
+      </tr>
+      </thead>
+
+      <!-- Body -->
+      <tbody class="divide-y divide-gray-200">
+        @if (loading()) {
+          <tr>
+            <td colspan="8" class="text-center py-8">Loading...</td>
+          </tr>
+        }
+
+        @else if (error()) {
+          <tr>
+            <td colspan="8" class="text-center text-red-600 py-8">
+              {{ error() }}
+            </td>
+          </tr>
+        }
+
+        @else if (products().length === 0) {
+          <tr>
+            <td colspan="8" class="text-center py-8 text-gray-500">
+              No products found
+            </td>
+          </tr>
+        } @else {
+          @for (product of products(); track product.id) {
+            <tr class="hover:bg-gray-50 transition-colors">
+
+              <!-- Product -->
+              <td class="px-6 py-4">
+                <div class="flex items-center gap-2">
+                  <span>{{ getStatusIcon(product.status) }}</span>
+                  <span class="font-medium text-gray-900">
+                    {{ product.name }}
+                  </span>
+                </div>
+              </td>
+
+              <!-- SKU -->
+              <td class="px-6 py-4 text-sm text-gray-600">
+                {{ product.productCode }}
+              </td>
+
+              <!-- Category -->
+              <td class="px-6 py-4 text-sm text-gray-600">
+                {{ product.category }}
+              </td>
+
+              <!-- Location -->
+              <td class="px-6 py-4">
+                <span class="text-sm font-mono bg-gray-100 px-2 py-1 rounded text-gray-700">
+                  {{ product.location }}
+                </span>
+              </td>
+
+              <!-- Quantity -->
+              <td class="px-6 py-4">
+                <div class="text-sm">
+                  <div class="font-medium text-gray-900">
+                    {{ product.quantity }}
+                  </div>
+                  <div class="text-gray-500 text-xs">
+                    Min: {{ product.minStock }}
+                  </div>
+                </div>
+              </td>
+
+              <!-- Price -->
+              <td class="px-6 py-4 text-sm font-medium text-gray-900">
+                {{ product.price }}
+              </td>
+
+              <!-- Status -->
+              <td class="px-6 py-4">
+                <span
+                  class="px-2 py-1 text-xs font-medium rounded-full"
+                  [ngClass]="getStatusBadgeClass(product.status)"
+                >
+                  {{ product.status }}
+                </span>
+              </td>
+
+              <!-- Actions -->
+              <td class="px-6 py-4 text-right">
+                <div class="flex items-center justify-end gap-2">
+
+                  <button
+                    (click)="viewDetails(product.id)"
+                    class="p-2 text-blue-600 hover:bg-blue-50 rounded-lg"
+                    title="View details"
+                    type="button"
+                  >
+                    👁️
+                  </button>
+
+                  <button
+                    (click)="editProduct(product.id)"
+                    class="p-2 text-gray-600 hover:bg-gray-100 rounded-lg"
+                    title="Edit"
+                    type="button"
+                  >
+                    ✏️
+                  </button>
+
+                  <button
+                    (click)="deleteProduct(product.id)"
+                    class="p-2 text-red-600 hover:bg-red-50 rounded-lg"
+                    title="Delete"
+                    type="button"
+                  >
+                    🗑️
+                  </button>
+
+                </div>
+              </td>
+
+            </tr>
+          }
+        }
+      </tbody>
+    </table>
+  </div>
+</div>

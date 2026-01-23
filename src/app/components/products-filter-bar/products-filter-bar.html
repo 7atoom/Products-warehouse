@@ -1,0 +1,59 @@
+<div class="bg-white p-6 rounded-lg border border-gray-200">
+  <div class="flex flex-col md:flex-row gap-4">
+
+    <!-- Search -->
+    <div class="flex-1 relative">
+      <!-- Search Icon -->
+      <span
+        class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-lg"
+      >
+        🔍
+      </span>
+
+      <input
+        type="text"
+        placeholder="Search by name, SKU, or supplier..."
+        (input)="onSearch($event)"
+        class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg
+               focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+      />
+    </div>
+
+    <!-- Filters -->
+    <div class="flex gap-3">
+
+      <!-- Category Filter -->
+      <div class="relative">
+        <span
+          class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+        >
+          ⚙️
+        </span>
+
+        <select
+          (change)="onCategoryChange($event)"
+          class="pl-9 pr-8 py-2 border border-gray-300 rounded-lg
+                 focus:ring-2 focus:ring-blue-500 focus:border-transparent
+                 appearance-none bg-white"
+        >
+          @for (cat of categories(); track cat) {
+            <option [value]="cat">{{ cat }}</option>
+          }
+        </select>
+      </div>
+
+      <!-- Status Filter -->
+      <select
+        (change)="onStatusChange($event)"
+        class="px-4 py-2 border border-gray-300 rounded-lg
+               focus:ring-2 focus:ring-blue-500 focus:border-transparent
+               appearance-none bg-white"
+      >
+        @for (stat of statuses(); track stat) {
+          <option [value]="stat">{{ stat }}</option>
+        }
+      </select>
+
+    </div>
+  </div>
+</div>

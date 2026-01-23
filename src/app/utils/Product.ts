@@ -3,9 +3,15 @@ export interface Product {
   name: string;
   description: string;
   price: number;
+
+  status: 'inStock' | 'lowStock' | 'outOfStock';
+
   category: string;
-  stock: number;
   imageUrl: string;
   createdAt: string;
   productCode: string;
+
+  location: string;
+  quantity: number;
+  minStock: number;
 }

@@ -5,171 +5,216 @@
       "name": "Laptop Pro 15",
       "description": "High-performance laptop with 16GB RAM and 512GB SSD",
       "price": 1299.99,
+      "status": "inStock",
       "category": "Electronics",
-      "stock": 25,
       "imageUrl": "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=400&h=300&fit=crop",
       "createdAt": "2026-01-15T10:30:00Z",
-      "productCode": "LP15-2026"
+      "productCode": "LP15-2026",
+      "location": "Aisle 1",
+      "quantity": 25,
+      "minStock": 5
     },
     {
       "id": 2,
       "name": "Wireless Mouse",
       "description": "Ergonomic wireless mouse with long battery life",
       "price": 29.99,
+      "status": "inStock",
       "category": "Accessories",
-      "stock": 150,
       "imageUrl": "https://images.unsplash.com/photo-1527814050087-3793815479db?w=400&h=300&fit=crop",
       "createdAt": "2026-01-16T14:20:00Z",
-      "productCode": "WM-2026"
+      "productCode": "WM-2026",
+      "location": "Aisle 2",
+      "quantity": 150,
+      "minStock": 20
     },
     {
       "id": 3,
       "name": "4K Monitor",
       "description": "27-inch 4K UHD monitor with HDR support",
       "price": 449.99,
+      "status": "outOfStock",
       "category": "Electronics",
-      "stock": 0,
       "imageUrl": "https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?w=400&h=300&fit=crop",
       "createdAt": "2026-01-17T09:15:00Z",
-      "productCode": "4KM-2026"
+      "productCode": "4KM-2026",
+      "location": "Aisle 1",
+      "quantity": 0,
+      "minStock": 10
     },
     {
       "id": 4,
       "name": "Mechanical Keyboard",
       "description": "RGB mechanical keyboard with Cherry MX switches",
       "price": 149.99,
+      "status": "inStock",
       "category": "Accessories",
-      "stock": 45,
       "imageUrl": "https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=400&h=300&fit=crop",
       "createdAt": "2026-01-18T16:45:00Z",
-      "productCode": "MK-2026"
+      "productCode": "MK-2026",
+      "location": "Aisle 2",
+      "quantity": 45,
+      "minStock": 10
     },
     {
       "id": 5,
       "name": "Office Desk Chair",
       "description": "Ergonomic office chair with lumbar support and adjustable height",
       "price": 299.99,
+      "status": "inStock",
       "category": "Furniture",
-      "stock": 30,
       "imageUrl": "https://images.unsplash.com/photo-1580480055273-228ff5388ef8?w=400&h=300&fit=crop",
       "createdAt": "2026-01-19T08:00:00Z",
-      "productCode": "ODC-2026"
+      "productCode": "ODC-2026",
+      "location": "Aisle 4",
+      "quantity": 30,
+      "minStock": 5
     },
     {
       "id": 6,
       "name": "Standing Desk",
       "description": "Electric height-adjustable standing desk with memory presets",
       "price": 599.99,
+      "status": "lowStock",
       "category": "Furniture",
-      "stock": 15,
       "imageUrl": "https://images.unsplash.com/photo-1595515106969-1ce29566ff1c?w=400&h=300&fit=crop",
       "createdAt": "2026-01-19T09:30:00Z",
-      "productCode": "SD-2026"
+      "productCode": "SD-2026",
+      "location": "Aisle 4",
+      "quantity": 15,
+      "minStock": 20
     },
     {
       "id": 7,
       "name": "Wireless Headphones",
       "description": "Noise-cancelling Bluetooth headphones with 30-hour battery life",
       "price": 249.99,
+      "status": "inStock",
       "category": "Electronics",
-      "stock": 60,
       "imageUrl": "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400&h=300&fit=crop",
       "createdAt": "2026-01-20T11:15:00Z",
-      "productCode": "WH-2026"
+      "productCode": "WH-2026",
+      "location": "Aisle 1",
+      "quantity": 60,
+      "minStock": 15
     },
     {
       "id": 8,
       "name": "USB-C Hub",
       "description": "7-in-1 USB-C hub with HDMI, USB 3.0, and SD card reader",
       "price": 49.99,
+      "status": "inStock",
       "category": "Accessories",
-      "stock": 200,
       "imageUrl": "https://images.unsplash.com/photo-1625948515291-69613efd103f?w=400&h=300&fit=crop",
       "createdAt": "2026-01-20T13:45:00Z",
-      "productCode": "USBC-2026"
+      "productCode": "USBC-2026",
+      "location": "Aisle 2",
+      "quantity": 200,
+      "minStock": 30
     },
     {
       "id": 9,
       "name": "Desk Lamp LED",
       "description": "Adjustable LED desk lamp with touch control and USB charging port",
       "price": 39.99,
+      "status": "inStock",
       "category": "Office Supplies",
-      "stock": 80,
       "imageUrl": "https://images.unsplash.com/photo-1507473885765-e6ed057f782c?w=400&h=300&fit=crop",
       "createdAt": "2026-01-21T10:00:00Z",
-      "productCode": "DLL-2026"
+      "productCode": "DLL-2026",
+      "location": "Aisle 5",
+      "quantity": 80,
+      "minStock": 10
     },
     {
       "id": 10,
       "name": "Webcam HD 1080p",
       "description": "Full HD webcam with built-in microphone and auto-focus",
       "price": 79.99,
+      "status": "inStock",
       "category": "Electronics",
-      "stock": 95,
       "imageUrl": "https://images.unsplash.com/photo-1587825140708-dfaf72ae4b04?w=400&h=300&fit=crop",
       "createdAt": "2026-01-21T12:30:00Z",
-      "productCode": "WC1080-2026"
+      "productCode": "WC1080-2026",
+      "location": "Aisle 1",
+      "quantity": 95,
+      "minStock": 15
     },
     {
       "id": 11,
       "name": "Notebook Set",
       "description": "Premium hardcover notebooks with dotted pages, pack of 3",
       "price": 24.99,
+      "status": "inStock",
       "category": "Office Supplies",
-      "stock": 120,
       "imageUrl": "https://images.unsplash.com/photo-1531346878377-a5be20888e57?w=400&h=300&fit=crop",
       "createdAt": "2026-01-21T14:00:00Z",
-      "productCode": "NS-2026"
+      "productCode": "NS-2026",
+      "location": "Aisle 5",
+      "quantity": 120,
+      "minStock": 20
     },
     {
       "id": 12,
       "name": "Portable SSD 1TB",
       "description": "Ultra-fast portable SSD with USB 3.1 Gen 2 interface",
       "price": 129.99,
+      "status": "inStock",
       "category": "Electronics",
-      "stock": 55,
       "imageUrl": "https://images.unsplash.com/photo-1597872200969-2b65d56bd16b?w=400&h=300&fit=crop",
       "createdAt": "2026-01-21T15:30:00Z",
-      "productCode": "PSSD1TB-2026"
+      "productCode": "PSSD1TB-2026",
+      "location": "Aisle 1",
+      "quantity": 55,
+      "minStock": 10
     },
     {
       "id": 13,
       "name": "Desk Organizer",
       "description": "Wooden desk organizer with multiple compartments",
       "price": 34.99,
+      "status": "inStock",
       "category": "Office Supplies",
-      "stock": 75,
       "imageUrl": "https://images.unsplash.com/photo-1588239034647-25783cbfbb67?w=400&h=300&fit=crop",
       "createdAt": "2026-01-21T16:00:00Z",
-      "productCode": "DO-2026"
+      "productCode": "DO-2026",
+      "location": "Aisle 5",
+      "quantity": 75,
+      "minStock": 10
     },
     {
       "id": 14,
       "name": "Gaming Mouse Pad",
       "description": "Extended RGB gaming mouse pad with non-slip rubber base",
       "price": 19.99,
+      "status": "inStock",
       "category": "Accessories",
-      "stock": 180,
       "imageUrl": "https://images.unsplash.com/photo-1615663245857-ac93bb7c39e7?w=400&h=300&fit=crop",
       "createdAt": "2026-01-21T17:00:00Z",
-      "productCode": "GMP-2026"
+      "productCode": "GMP-2026",
+      "location": "Aisle 2",
+      "quantity": 180,
+      "minStock": 25
     },
     {
       "id": 15,
       "name": "Bookshelf Modern",
       "description": "5-tier modern bookshelf with sturdy metal frame",
       "price": 159.99,
+      "status": "inStock",
       "category": "Furniture",
-      "stock": 20,
       "imageUrl": "https://images.unsplash.com/photo-1594620302200-9a762244a156?w=400&h=300&fit=crop",
       "createdAt": "2026-01-21T18:00:00Z",
-      "productCode": "BSM-2026"
+      "productCode": "BSM-2026",
+      "location": "Aisle 4",
+      "quantity": 20,
+      "minStock": 5
     }
   ],
   "categories": [
     { "id": 1, "name": "Electronics" },
     { "id": 2, "name": "Accessories" },
     { "id": 3, "name": "Furniture" },
-    { "id":  4, "name": "Office Supplies" }
+    { "id": 4, "name": "Office Supplies" }
   ]
 }
