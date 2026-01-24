@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import {Component, EventEmitter, Input, Output} from '@angular/core';
 
 @Component({
   selector: 'app-header',
@@ -7,10 +7,10 @@ import { Component } from '@angular/core';
   styles: ``,
 })
 export class Header {
-  currentView : 'list' | 'create' = "list";
+  @Input() currentView: 'list' | 'create' = 'list';
+  @Output() viewChange = new EventEmitter<'list' | 'create'>();
 
-  setView(view: 'list' | 'create') {
-    this.currentView = view;
+  addProduct() {
+    this.viewChange.emit('create');
   }
-
 }

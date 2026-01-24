@@ -1,5 +1,6 @@
-<app-header></app-header>
-<app-products-stats></app-products-stats>
-<app-products-filter-bar></app-products-filter-bar>
-<router-outlet></router-outlet>
-<app-footer></app-footer>
+  <app-header
+    [currentView]="currentView"
+    (viewChange)="setView($event)">
+  </app-header>
+  <router-outlet></router-outlet>
+<!--  <app-footer></app-footer>-->

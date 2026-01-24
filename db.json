@@ -1,7 +1,7 @@
 {
   "products": [
     {
-      "id": 1,
+      "id": "1",
       "name": "Laptop Pro 15",
       "description": "High-performance laptop with 16GB RAM and 512GB SSD",
       "price": 1299.99,
@@ -15,7 +15,7 @@
       "minStock": 5
     },
     {
-      "id": 2,
+      "id": "2",
       "name": "Wireless Mouse",
       "description": "Ergonomic wireless mouse with long battery life",
       "price": 29.99,
@@ -29,7 +29,7 @@
       "minStock": 20
     },
     {
-      "id": 3,
+      "id": "3",
       "name": "4K Monitor",
       "description": "27-inch 4K UHD monitor with HDR support",
       "price": 449.99,
@@ -43,7 +43,7 @@
       "minStock": 10
     },
     {
-      "id": 4,
+      "id": "4",
       "name": "Mechanical Keyboard",
       "description": "RGB mechanical keyboard with Cherry MX switches",
       "price": 149.99,
@@ -57,7 +57,7 @@
       "minStock": 10
     },
     {
-      "id": 5,
+      "id": "5",
       "name": "Office Desk Chair",
       "description": "Ergonomic office chair with lumbar support and adjustable height",
       "price": 299.99,
@@ -71,7 +71,7 @@
       "minStock": 5
     },
     {
-      "id": 6,
+      "id": "6",
       "name": "Standing Desk",
       "description": "Electric height-adjustable standing desk with memory presets",
       "price": 599.99,
@@ -85,7 +85,7 @@
       "minStock": 20
     },
     {
-      "id": 7,
+      "id": "7",
       "name": "Wireless Headphones",
       "description": "Noise-cancelling Bluetooth headphones with 30-hour battery life",
       "price": 249.99,
@@ -99,7 +99,7 @@
       "minStock": 15
     },
     {
-      "id": 8,
+      "id": "8",
       "name": "USB-C Hub",
       "description": "7-in-1 USB-C hub with HDMI, USB 3.0, and SD card reader",
       "price": 49.99,
@@ -113,7 +113,7 @@
       "minStock": 30
     },
     {
-      "id": 9,
+      "id": "9",
       "name": "Desk Lamp LED",
       "description": "Adjustable LED desk lamp with touch control and USB charging port",
       "price": 39.99,
@@ -127,7 +127,7 @@
       "minStock": 10
     },
     {
-      "id": 10,
+      "id": "10",
       "name": "Webcam HD 1080p",
       "description": "Full HD webcam with built-in microphone and auto-focus",
       "price": 79.99,
@@ -141,7 +141,7 @@
       "minStock": 15
     },
     {
-      "id": 11,
+      "id": "11",
       "name": "Notebook Set",
       "description": "Premium hardcover notebooks with dotted pages, pack of 3",
       "price": 24.99,
@@ -155,7 +155,7 @@
       "minStock": 20
     },
     {
-      "id": 12,
+      "id": "12",
       "name": "Portable SSD 1TB",
       "description": "Ultra-fast portable SSD with USB 3.1 Gen 2 interface",
       "price": 129.99,
@@ -169,7 +169,7 @@
       "minStock": 10
     },
     {
-      "id": 13,
+      "id": "13",
       "name": "Desk Organizer",
       "description": "Wooden desk organizer with multiple compartments",
       "price": 34.99,
@@ -183,7 +183,7 @@
       "minStock": 10
     },
     {
-      "id": 14,
+      "id": "14",
       "name": "Gaming Mouse Pad",
       "description": "Extended RGB gaming mouse pad with non-slip rubber base",
       "price": 19.99,
@@ -197,7 +197,7 @@
       "minStock": 25
     },
     {
-      "id": 15,
+      "id": "15",
       "name": "Bookshelf Modern",
       "description": "5-tier modern bookshelf with sturdy metal frame",
       "price": 159.99,
@@ -209,12 +209,38 @@
       "location": "Aisle 4",
       "quantity": 20,
       "minStock": 5
+    },
+    {
+      "id": "2e1c",
+      "name": "MacBook m4",
+      "productCode": "mb-m4256",
+      "category": "Electronics",
+      "description": "New lap from apple 2025, 16 ram and 256G",
+      "quantity": 5,
+      "minStock": 5,
+      "price": 1000,
+      "location": "Ismailia",
+      "status": "inStock",
+      "createdAt": "2026-01-24T19:06:42.563Z",
+      "imageUrl": ""
     }
   ],
   "categories": [
-    { "id": 1, "name": "Electronics" },
-    { "id": 2, "name": "Accessories" },
-    { "id": 3, "name": "Furniture" },
-    { "id": 4, "name": "Office Supplies" }
+    {
+      "id": "1",
+      "name": "Electronics"
+    },
+    {
+      "id": "2",
+      "name": "Accessories"
+    },
+    {
+      "id": "3",
+      "name": "Furniture"
+    },
+    {
+      "id": "4",
+      "name": "Office Supplies"
+    }
   ]
 }
