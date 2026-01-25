@@ -4,6 +4,7 @@ import {ProductsService} from '../../services/products-service';
 import {ProductsFilterBar} from '../products-filter-bar/products-filter-bar';
 import {ProductsStats} from '../products-stats/products-stats';
 import {Router} from '@angular/router';
+import {ViewStateService} from '../../services/view-state-service';
 
 
 @Component({
@@ -14,6 +15,7 @@ import {Router} from '@angular/router';
 })
 export class ProductsList implements OnInit {
   private productsService = inject(ProductsService);
+  private viewStateService = inject(ViewStateService);
   router = inject(Router);
 
   thClass = 'px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase'
@@ -26,34 +28,6 @@ export class ProductsList implements OnInit {
     this.productsService.loadProducts();
   }
 
-    getStatusIcon(status: string): string {
-      switch (status) {
-        case 'inStock':
-          return '✔️';
-        case 'lowStock':
-          return '⚠️';
-        case 'outOfStock':
-          return '❌';
-        default:
-          return '';
-      }
-    }
-
-    getStatusBadgeClass(status: string): string {
-      switch (status) {
-        case 'inStock':
-          return 'badge-success';
-        case 'lowStock':
-          return 'badge-warning';
-        case 'outOfStock':
-          return 'badge-danger';
-        default:
-          return '';
-      }
-    }
-
-
-
   viewDetails(id: number) {
     console.log('View product', id);
     this.router.navigate(['/products', id]).then(() =>
@@ -62,9 +36,21 @@ export class ProductsList implements OnInit {
 
   editProduct(id: number) {
     console.log('Edit product', id);
+    this.router.navigate(['/productForm']).then(() =>
+      console.log('Navigated to edit product', id));
+      this.viewStateService.setEditView(id);
   }
 
   deleteProduct(id: number) {
-    console.log('Delete product', id);
+    if (confirm('Are you sure you want to delete this product?')) {
+      this.productsService.deleteProduct(id).subscribe({
+        next: () => {
+          console.log('Product deleted successfully', id);
+        },
+        error: (err) => {
+          console.error('Failed to delete product', err);
+        }
+      });
+    }
   }
 }

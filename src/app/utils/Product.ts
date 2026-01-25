@@ -6,6 +6,7 @@ export interface Product {
 
   status: 'inStock' | 'lowStock' | 'outOfStock';
 
+  supplier: string | null;
   category: string;
   imageUrl: string;
   createdAt: string;
@@ -14,4 +15,5 @@ export interface Product {
   location: string;
   quantity: number;
   minStock: number;
+  lastRestocked: string | null;
 }

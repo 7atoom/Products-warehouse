@@ -1,9 +1,12 @@
 import { Component , inject } from '@angular/core';
 import {ProductsService} from '../../services/products-service';
+import {CurrencyPipe} from '@angular/common';
 
 @Component({
   selector: 'app-products-stats',
-  imports: [],
+  imports: [
+    CurrencyPipe
+  ],
   templateUrl: './products-stats.html',
   styles: ``,
 })

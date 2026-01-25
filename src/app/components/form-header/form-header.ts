@@ -1,5 +1,6 @@
-import {Component, EventEmitter, inject, Input} from '@angular/core';
+import {Component, inject, Input} from '@angular/core';
 import {Router} from '@angular/router';
+import {ViewStateService} from '../../services/view-state-service';
 
 @Component({
   selector: 'app-form-header',
@@ -9,10 +10,13 @@ import {Router} from '@angular/router';
 })
 export class FormHeader {
   router = inject(Router);
-  @Input() mode: 'create' | 'edit' = 'create'; // <-- this receives the value from parent
-  @Input() onCancel = new EventEmitter<void>();
-
-  handleCancel() {
-    this.onCancel.emit();
+  viewStateService = inject(ViewStateService);
+  mode = this.viewStateService.currentView;
+  @Input() onCancel(){
+    this.router.navigate(['/products']).then(() =>
+      console.log('Navigated to products list'));
+    this.viewStateService.setListView();
   }
+
+
 }

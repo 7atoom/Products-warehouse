@@ -92,7 +92,7 @@
 
               <!-- Price -->
               <td class="px-6 py-4 text-md font-medium text-gray-900">
-                {{ product.price }}
+                {{ product.price | currency:'USD':'symbol':'1.2-2' }}
               </td>
 
               <!-- Status -->

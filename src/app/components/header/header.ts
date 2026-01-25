@@ -1,4 +1,6 @@
-import {Component, EventEmitter, Input, Output} from '@angular/core';
+import {Component, inject} from '@angular/core';
+import {ViewStateService} from '../../services/view-state-service';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-header',
@@ -7,10 +9,14 @@ import {Component, EventEmitter, Input, Output} from '@angular/core';
   styles: ``,
 })
 export class Header {
-  @Input() currentView: 'list' | 'create' = 'list';
-  @Output() viewChange = new EventEmitter<'list' | 'create'>();
+  router = inject(Router);
+  viewStateService = inject(ViewStateService);
+  mode = this.viewStateService.currentView;
 
   addProduct() {
-    this.viewChange.emit('create');
-  }
+    this.viewStateService.setCreateView();
+    this.router.navigate(['/productForm']).then(() =>
+      console.log('Navigated to product form'));
+      this.viewStateService.setCreateView();
+    }
 }

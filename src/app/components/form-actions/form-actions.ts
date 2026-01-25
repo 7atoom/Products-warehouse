@@ -1,5 +1,6 @@
-import {Component, EventEmitter, inject, Input} from '@angular/core';
+import {Component, inject, Input} from '@angular/core';
 import {Router} from '@angular/router';
+import {ViewStateService} from '../../services/view-state-service';
 
 @Component({
   selector: 'app-form-actions',
@@ -9,10 +10,11 @@ import {Router} from '@angular/router';
 })
 export class FormActions {
   router = inject(Router);
-  @Input() mode: 'create' | 'edit' = 'create';
-  @Input() onCancel = new EventEmitter<void>();
-
-  handleCancel() {
-    this.onCancel.emit();
+  viewStateService = inject(ViewStateService);
+  mode = this.viewStateService.currentView;
+  @Input() onCancel(){
+    this.router.navigate(['/products']).then(() =>
+      console.log('Navigated to products list'));
+    this.viewStateService.setListView();
   }
 }

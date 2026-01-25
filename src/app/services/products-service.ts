@@ -1,6 +1,6 @@
 import {Injectable, inject, signal, computed} from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, tap } from 'rxjs';
+import {catchError, Observable, tap} from 'rxjs';
 import { Product } from '../utils/Product';
 
 @Injectable({
@@ -18,6 +18,9 @@ export class ProductsService {
   readonly products = this._products.asReadonly();
   readonly loading = this._loading.asReadonly();
   readonly error = this._error.asReadonly();
+
+  private readonly _deleting = signal<boolean>(false);
+  readonly deleting = this._deleting.asReadonly();
 
   readonly totalProducts = computed(() => this._products().length);
   readonly inStockCount = computed(() =>
@@ -76,7 +79,7 @@ export class ProductsService {
         this._products.set(data);
         this._loading.set(false);
       },
-      error: (err) => {
+      error: () => {
         this._error.set('Failed to load products');
         this._loading.set(false);
       },
@@ -100,9 +103,19 @@ export class ProductsService {
   }
 
   deleteProduct(id: number): Observable<void> {
+    this._deleting.set(true);
     return this.http
       .delete<void>(`${this.apiBaseUrl}/${id}`)
-      .pipe(tap(() => this.loadProducts()));
+      .pipe(
+        tap(() => {
+          this.loadProducts();
+          this._deleting.set(false);
+        }),
+        catchError(err => {
+          this._deleting.set(false);
+          throw err;
+        })
+      );
   }
 
 
