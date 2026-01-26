@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import {ActivatedRoute, NavigationEnd, Router, RouterOutlet} from '@angular/router';
-import {Header} from './components/header/header';
+import {Header} from './pages/header/header';
 import {filter, map, mergeMap} from 'rxjs';
 
 @Component({

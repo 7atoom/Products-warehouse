@@ -1,8 +1,8 @@
 import {Component, inject, OnInit} from '@angular/core';
 import {CommonModule, NgClass} from '@angular/common';
 import {ProductsService} from '../../services/products-service';
-import {ProductsFilterBar} from '../products-filter-bar/products-filter-bar';
-import {ProductsStats} from '../products-stats/products-stats';
+import {ProductsFilterBar} from '../../components/products-filter-bar/products-filter-bar';
+import {ProductsStats} from '../../components/products-stats/products-stats';
 import {Router} from '@angular/router';
 import {ViewStateService} from '../../services/view-state-service';
 
