@@ -1,11 +1,119 @@
-import { Component } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
+import { CommonModule, DatePipe, CurrencyPipe } from '@angular/common';
+import { ActivatedRoute, Router } from '@angular/router';
+import { ProductsService } from '../../services/products-service';
+import { ViewStateService } from '../../services/view-state-service';
+import { Product } from '../../utils/Product';
 
 @Component({
   selector: 'app-product-details',
-  imports: [],
+  standalone: true,
+  imports: [CommonModule, DatePipe, CurrencyPipe],
   templateUrl: './product-details.html',
-  styles: ``,
+  styles: ``
 })
-export class ProductDetails {
+export class ProductDetails implements OnInit {
+  private route = inject(ActivatedRoute);
+  private router = inject(Router);
+  private productsService = inject(ProductsService);
+  private viewStateService = inject(ViewStateService);
 
+  product = signal<Product | null>(null);
+  loading = signal<boolean>(false);
+  error = signal<string | null>(null);
+
+  ngOnInit() {
+    const id = this.route.snapshot.paramMap.get('id');
+
+    if (id) {
+      this.loadProduct(+id);
+    } else {
+      this.error.set('Invalid product ID');
+    }
+  }
+
+  loadProduct(id: number) {
+    this.loading.set(true);
+    this.error.set(null);
+    this.product.set(null);
+
+    this.productsService.getProductById(id).subscribe({
+      next: (data) => {
+        this.product.set(data);
+        this.loading.set(false);
+      },
+      error: (err) => {
+        console.error('Error loading product:', err);
+        this.error.set('Could not find product');
+        this.loading.set(false);
+      }
+    });
+  }
+
+  onBack() {
+    this.viewStateService.setListView();
+    this.router.navigate(['/products']);
+  }
+
+  onEdit(id: string | number) {
+    this.viewStateService.setEditView(+id);
+    this.router.navigate(['/productForm']);
+  }
+
+  onDelete(id: string | number) {
+    const currentProduct = this.product();
+    if (currentProduct && confirm(`Are you sure you want to delete "${currentProduct.name}"?`)) {
+      this.productsService.deleteProduct(+id).subscribe({
+        next: () => {
+          this.viewStateService.setListView();
+          this.router.navigate(['/products']);
+        },
+        error: (err) => {
+          console.error('Failed to delete product', err);
+          this.error.set('Failed to delete product');
+        }
+      });
+    }
+  }
+
+  getStatusLabel(status: string): string {
+    return status
+      .replace(/([A-Z])/g, ' $1')
+      .replace(/^./, (str) => str.toUpperCase())
+      .trim();
+  }
+
+  getStockPercentage(): number {
+    const p = this.product();
+    if (!p || p.minStock === 0) return 100;
+    const percentage = (p.quantity / (p.minStock * 2)) * 100;
+    return Math.min(percentage, 100);
+  }
+
+  getTotalValue(): number {
+    const p = this.product();
+    if (!p) return 0;
+    return p.price * p.quantity;
+  }
+
+  getDaysSinceRestock(): number {
+    const p = this.product();
+    if (!p || !p.lastRestocked) return 0;
+    const lastRestocked = new Date(p.lastRestocked);
+    const today = new Date();
+    const diffTime = Math.abs(today.getTime() - lastRestocked.getTime());
+    return Math.floor(diffTime / (1000 * 60 * 60 * 24));
+  }
+
+  getStockCoverage(): number {
+    const p = this.product();
+    if (!p || p.minStock === 0) return 0;
+    return Math.floor((p.quantity / p.minStock) * 100);
+  }
+
+  isReorderNeeded(): boolean {
+    const p = this.product();
+    if (!p) return false;
+    return p.quantity < p.minStock;
+  }
 }

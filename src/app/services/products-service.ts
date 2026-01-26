@@ -87,7 +87,12 @@ export class ProductsService {
   }
 
   getProductById(id: number): Observable<Product> {
-    return this.http.get<Product>(`${this.apiBaseUrl}/${id}`);
+    return this.http.get<Product>(`${this.apiBaseUrl}/${id}`).pipe(
+      catchError(err => {
+        this._error.set('Failed to load product details');
+        throw err;
+      })
+    );
   }
 
   createProduct(product: Product): Observable<Product> {
@@ -96,13 +101,13 @@ export class ProductsService {
       .pipe(tap(() => this.loadProducts()));
   }
 
-  updateProduct(id: number, product: Product): Observable<Product> {
+  updateProduct(id: number | string, product: Product): Observable<Product> {
     return this.http
       .put<Product>(`${this.apiBaseUrl}/${id}`, product)
       .pipe(tap(() => this.loadProducts()));
   }
 
-  deleteProduct(id: number): Observable<void> {
+  deleteProduct(id: number | string): Observable<void> {
     this._deleting.set(true);
     return this.http
       .delete<void>(`${this.apiBaseUrl}/${id}`)

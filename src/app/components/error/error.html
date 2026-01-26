@@ -1,1 +1,37 @@
-<p>error works!</p>
+
+<div class="min-h-screen flex items-center justify-center bg-gray-100 px-4">
+  <div class="max-w-md w-full bg-white shadow-xl rounded-2xl p-8 text-center border border-gray-200">
+    <div class="flex justify-center mb-4">
+      <div class="h-16 w-16 flex items-center justify-center rounded-full bg-red-100">
+        <i class="fa-solid fa-triangle-exclamation text-red-600 text-3xl"></i>
+      </div>
+    </div>
+
+    <h1 class="text-2xl font-bold text-gray-800 mb-2">Something went wrong</h1>
+    <p class="text-gray-500 mb-6">
+      We couldn’t load the page you’re looking for. It may have been moved, deleted, or the link might be broken.
+    </p>
+
+    <div class="flex flex-col sm:flex-row gap-3 justify-center">
+      <a
+        routerLink="/products"
+        class="inline-flex items-center justify-center px-5 py-2.5 rounded-lg bg-blue-600 text-white font-medium hover:bg-blue-700 transition"
+      >
+        <i class="fa-solid fa-box-open mr-2"></i>
+        Go to Products
+      </a>
+
+      <button
+        onclick="history.back()"
+        class="inline-flex items-center justify-center px-5 py-2.5 rounded-lg border border-gray-300 text-gray-700 font-medium hover:bg-gray-100 transition"
+        type="button"
+      >
+        <i class="fa-solid fa-arrow-left mr-2"></i>
+        Go Back
+      </button>
+    </div>
+
+    <p class="text-xs text-gray-400 mt-8">Error code: 404</p>
+  </div>
+</div>
+

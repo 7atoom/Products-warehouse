@@ -7,8 +7,8 @@ import {ProductForm} from './components/product-form/product-form';
 export const routes: Routes = [
   { path: '', redirectTo: 'products', pathMatch: 'full' },
   { path: 'products', component: ProductsList },
-  { path: 'productForm', component: ProductForm },
   { path: 'products/:id', component: ProductDetails },
-  { path: '**', component: Error}
+  { path: 'productForm', component: ProductForm },
+  { path: '**', component: Error, data: { hideHeader: true } }
 
 ];

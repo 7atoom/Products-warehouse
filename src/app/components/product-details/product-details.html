@@ -1,1 +1,225 @@
-<p>product-details works!</p>
+@if (loading()) {
+  <div class="flex flex-col items-center justify-center min-h-100 space-y-4">
+    <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+    <p class="text-gray-500 animate-pulse">Fetching product details...</p>
+  </div>
+}
+
+@else if (error()) {
+  <div class="mx-8 my-6 p-6 bg-red-50 border border-red-200 rounded-xl text-center">
+    <i class="fa-solid fa-circle-exclamation text-red-500 text-3xl mb-3"></i>
+    <h3 class="text-lg font-bold text-red-900">{{ error() }}</h3>
+    <button (click)="onBack()" class="mt-4 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700">
+      Back to Inventory
+    </button>
+  </div>
+}
+
+@else if (product(); as product) {
+  <div class="space-y-6 mx-8 my-6">
+    <div class="flex items-center justify-between">
+      <button
+        (click)="onBack()"
+        class="flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors"
+      >
+        <i class="fa-solid fa-arrow-left"></i>
+        Back to Products
+      </button>
+      <div class="flex gap-3">
+        <button
+          (click)="onEdit(product.id)"
+          class="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+        >
+          <i class="fa-solid fa-pen text-sm"></i>
+          Edit Product
+        </button>
+        <button
+          (click)="onDelete(product.id)"
+          class="flex items-center gap-2 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
+        >
+          <i class="fa-solid fa-trash text-sm"></i>
+          Delete
+        </button>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div class="lg:col-span-2 space-y-6">
+        <div class="bg-white rounded-lg border border-gray-200 p-6 shadow-sm">
+          <div class="flex items-start justify-between mb-4">
+            <div>
+              <h2 class="text-3xl font-bold text-gray-900 mb-2">{{ product.name }}</h2>
+              <p class="text-gray-600">{{ product.description }}</p>
+            </div>
+            <span
+              class="px-3 py-1 rounded-full text-sm font-medium"
+              [ngClass]="{
+                'bg-green-100 text-green-700 border border-green-200': product.status === 'inStock',
+                'bg-yellow-100 text-yellow-700 border border-yellow-200': product.status === 'lowStock',
+                'bg-red-100 text-red-700 border border-red-200': product.status === 'outOfStock'
+              }"
+            >
+              {{ getStatusLabel(product.status) }}
+            </span>
+          </div>
+
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6">
+            <div>
+              <p class="text-sm text-gray-500 mb-1">Product Code</p>
+              <p class="font-mono font-medium text-gray-900">{{ product.productCode }}</p>
+            </div>
+            <div>
+              <p class="text-sm text-gray-500 mb-1">Category</p>
+              <p class="font-medium text-gray-900">{{ product.category }}</p>
+            </div>
+            <div>
+              <p class="text-sm text-gray-500 mb-1">Location</p>
+              <p class="font-mono font-medium text-gray-900">{{ product.location }}</p>
+            </div>
+            <div>
+              <p class="text-sm text-gray-500 mb-1">Supplier</p>
+              <p class="font-medium text-gray-900">{{ product.supplier }}</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-white rounded-lg border border-gray-200 p-6 shadow-sm">
+          <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+            <i class="fa-solid fa-box text-blue-600"></i>
+            Stock Information
+          </h3>
+
+          <div class="space-y-4">
+            <div>
+              <div class="flex justify-between mb-2">
+                <span class="text-sm text-gray-600">Current Stock Level</span>
+                <span class="text-sm font-medium text-gray-900">{{ product.quantity }} units</span>
+              </div>
+              <div class="w-full bg-gray-200 rounded-full h-2">
+                <div
+                  class="h-2 rounded-full transition-all duration-500"
+                  [ngClass]="{
+                    'bg-green-600': product.status === 'inStock',
+                    'bg-yellow-600': product.status === 'lowStock',
+                    'bg-red-600': product.status === 'outOfStock'
+                  }"
+                  [style.width.%]="getStockPercentage()"
+                ></div>
+              </div>
+            </div>
+
+            @if (product.status === 'lowStock') {
+              <div class="flex items-start gap-2 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
+                <i class="fa-solid fa-triangle-exclamation text-yellow-600 mt-0.5"></i>
+                <div>
+                  <p class="text-sm font-medium text-yellow-900">Low Stock Alert</p>
+                  <p class="text-sm text-yellow-700">Stock is below minimum threshold. Consider restocking soon.</p>
+                </div>
+              </div>
+            }
+
+            @if (product.status === 'outOfStock') {
+              <div class="flex items-start gap-2 p-3 bg-red-50 border border-red-200 rounded-lg">
+                <i class="fa-solid fa-circle-xmark text-red-600 mt-0.5"></i>
+                <div>
+                  <p class="text-sm font-medium text-red-900">Out of Stock</p>
+                  <p class="text-sm text-red-700">This product is currently unavailable. Restock immediately.</p>
+                </div>
+              </div>
+            }
+
+            <div class="grid grid-cols-2 gap-4 pt-2">
+              <div>
+                <p class="text-sm text-gray-500 mb-1">Minimum Stock</p>
+                <p class="text-lg font-semibold text-gray-900">{{ product.minStock }} units</p>
+              </div>
+              <div>
+                <p class="text-sm text-gray-500 mb-1">Last Restocked</p>
+                <p class="text-lg font-semibold text-gray-900">
+                  {{ product.lastRestocked | date:'shortDate' }}
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-white rounded-lg border border-gray-200 p-6 shadow-sm">
+          <h3 class="text-lg font-semibold text-gray-900 mb-4">Additional Information</h3>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="flex items-start gap-3">
+              <i class="fa-solid fa-location-dot text-gray-400 mt-1"></i>
+              <div>
+                <p class="text-sm font-medium text-gray-900">Warehouse Location</p>
+                <p class="text-sm text-gray-600">{{ product.location }}</p>
+              </div>
+            </div>
+            <div class="flex items-start gap-3">
+              <i class="fa-solid fa-truck text-gray-400 mt-1"></i>
+              <div>
+                <p class="text-sm font-medium text-gray-900">Supplier</p>
+                <p class="text-sm text-gray-600">{{ product.supplier }}</p>
+              </div>
+            </div>
+            <div class="flex items-start gap-3">
+              <i class="fa-solid fa-calendar text-gray-400 mt-1"></i>
+              <div>
+                <p class="text-sm font-medium text-gray-900">Last Restocked</p>
+                <p class="text-sm text-gray-600">
+                  {{ product.lastRestocked | date:'MMMM d, y' }}
+                </p>
+              </div>
+            </div>
+            <div class="flex items-start gap-3">
+              <i class="fa-solid fa-dollar-sign text-gray-400 mt-1"></i>
+              <div>
+                <p class="text-sm font-medium text-gray-900">Unit Price</p>
+                <p class="text-sm text-gray-600">{{ product.price | currency }}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="space-y-6">
+        <div class="bg-white rounded-lg border border-gray-200 p-6 shadow-sm">
+          <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+            <i class="fa-solid fa-sack-dollar text-green-600"></i>
+            Financial Summary
+          </h3>
+          <div class="space-y-4">
+            <div>
+              <p class="text-sm text-gray-500 mb-1">Unit Price</p>
+              <p class="text-2xl font-bold text-gray-900">{{ product.price | currency }}</p>
+            </div>
+            <div class="pt-4 border-t border-gray-200">
+              <p class="text-sm text-gray-500 mb-1">Current Quantity</p>
+              <p class="text-xl font-semibold text-gray-900">{{ product.quantity }} units</p>
+            </div>
+            <div class="pt-4 border-t border-gray-200">
+              <p class="text-sm text-gray-500 mb-1">Total Value</p>
+              <p class="text-2xl font-bold text-green-600">{{ getTotalValue() | currency }}</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-linear-to-br from-blue-600 to-indigo-700 rounded-lg p-6 text-white shadow-lg">
+          <h3 class="text-lg font-semibold mb-4">Quick Stats</h3>
+          <div class="space-y-3">
+            <div class="flex justify-between items-center">
+              <span class="text-blue-100">Days Since Restock</span>
+              <span class="font-semibold">{{ getDaysSinceRestock() }}</span>
+            </div>
+            <div class="flex justify-between items-center">
+              <span class="text-blue-100">Stock Coverage</span>
+              <span class="font-semibold">{{ getStockCoverage() }}%</span>
+            </div>
+            <div class="flex justify-between items-center">
+              <span class="text-blue-100">Reorder Needed</span>
+              <span class="font-semibold">{{ isReorderNeeded() ? 'Yes' : 'No' }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+}

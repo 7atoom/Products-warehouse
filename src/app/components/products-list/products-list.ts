@@ -32,6 +32,7 @@ export class ProductsList implements OnInit {
     console.log('View product', id);
     this.router.navigate(['/products', id]).then(() =>
       console.log('Navigated to product details', id));
+    this.viewStateService.setDetailsView(id);
   }
 
   editProduct(id: number) {

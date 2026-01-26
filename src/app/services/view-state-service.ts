@@ -4,7 +4,7 @@ import { Injectable, signal } from '@angular/core';
   providedIn: 'root',
 })
 export class ViewStateService {
-  readonly currentView = signal<'list' | 'create' | 'edit'>('list');
+  readonly currentView = signal<'list' | 'create' | 'edit' | 'details'>('list');
   readonly editingProductId = signal<number | null>(null);
 
   setCreateView() {
@@ -20,5 +20,10 @@ export class ViewStateService {
   setListView() {
     this.currentView.set('list');
     this.editingProductId.set(null);
+  }
+
+  setDetailsView(productId: number) {
+    this.currentView.set('details');
+    this.editingProductId.set(productId);
   }
 }
