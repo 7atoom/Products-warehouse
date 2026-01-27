@@ -1,0 +1,40 @@
+<div class="fixed top-4 right-4 z-50 space-y-2">
+  @for (toast of toastService.toasts$(); track toast.id) {
+    <div
+      class="flex items-center gap-3 min-w-75 max-w-md px-4 py-3 rounded-lg shadow-lg border transform transition-all duration-300 ease-in-out animate-slide-in"
+      [ngClass]="{
+            'bg-green-50 border-green-200 text-green-800': toast.type === 'success',
+            'bg-red-50 border-red-200 text-red-800': toast.type === 'error',
+            'bg-blue-50 border-blue-200 text-blue-800': toast.type === 'info',
+            'bg-yellow-50 border-yellow-200 text-yellow-800': toast.type === 'warning'
+          }"
+    >
+      <!-- Icon -->
+      <div class="shrink-0">
+        @if (toast.type === 'success') {
+          <i class="fa-solid fa-circle-check text-green-600 text-xl"></i>
+        }
+        @if (toast.type === 'error') {
+          <i class="fa-solid fa-circle-xmark text-red-600 text-xl"></i>
+        }
+        @if (toast.type === 'info') {
+          <i class="fa-solid fa-circle-info text-blue-600 text-xl"></i>
+        }
+        @if (toast.type === 'warning') {
+          <i class="fa-solid fa-triangle-exclamation text-yellow-600 text-xl"></i>
+        }
+      </div>
+
+      <!-- Message -->
+      <p class="flex-1 text-sm font-medium">{{ toast.message }}</p>
+
+      <!-- Close Button -->
+      <button
+        (click)="toastService.remove(toast.id)"
+        class="shrink-0 text-gray-400 hover:text-gray-600 transition-colors"
+      >
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+    </div>
+  }
+</div>

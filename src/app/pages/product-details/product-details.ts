@@ -4,6 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { ProductsService } from '../../services/products-service';
 import { ViewStateService } from '../../services/view-state-service';
 import { Product } from '../../utils/Product';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-product-details',
@@ -62,18 +63,48 @@ export class ProductDetails implements OnInit {
 
   onDelete(id: string | number) {
     const currentProduct = this.product();
-    if (currentProduct && confirm(`Are you sure you want to delete "${currentProduct.name}"?`)) {
-      this.productsService.deleteProduct(+id).subscribe({
-        next: () => {
-          this.viewStateService.setListView();
-          this.router.navigate(['/products']);
-        },
-        error: (err) => {
-          console.error('Failed to delete product', err);
-          this.error.set('Failed to delete product');
-        }
-      });
-    }
+
+    if (!currentProduct) return;
+
+    Swal.fire({
+      title: `Delete "${currentProduct.name}"?`,
+      text: "This action cannot be undone.",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#286fef',
+      confirmButtonText: 'Yes, delete it',
+      cancelButtonText: 'Cancel',
+      reverseButtons: true
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.productsService.deleteProduct(+id).subscribe({
+          next: () => {
+            Swal.fire({
+              title: 'Deleted!',
+              text: 'Product has been removed.',
+              icon: 'success',
+              timer: 1500,
+              showConfirmButton: false
+            });
+
+            this.viewStateService.setListView();
+            this.router.navigate(['/products']);
+          },
+          error: (err) => {
+            console.error('Failed to delete product', err);
+
+            Swal.fire({
+              title: 'Error',
+              text: 'Failed to delete product.',
+              icon: 'error'
+            });
+
+            this.error.set('Failed to delete product');
+          }
+        });
+      }
+    });
   }
 
   getStatusLabel(status: string): string {

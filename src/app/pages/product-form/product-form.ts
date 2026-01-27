@@ -8,6 +8,7 @@ import {FormActions} from '../../components/form-actions/form-actions';
 import {ViewStateService} from '../../services/view-state-service';
 import {CommonModule} from '@angular/common';
 import {CategoriesService} from '../../services/categories-service';
+import {ToastService} from '../../services/toast-service';
 
 
 @Component({
@@ -21,6 +22,7 @@ export class ProductForm implements OnInit {
   productsService = inject(ProductsService);
   categoriesService = inject(CategoriesService);
   viewStateService = inject(ViewStateService);
+  toastService = inject(ToastService);
 
 
   mode = this.viewStateService.currentView;
@@ -226,7 +228,7 @@ export class ProductForm implements OnInit {
     this.productForm.markAllAsTouched();
 
     if (!this.productForm.valid) {
-      console.log('Form is invalid. Please check all required fields.');
+      this.toastService.error('Please fix the errors in the form before submitting.');
       return;
     }
 
@@ -245,16 +247,17 @@ export class ProductForm implements OnInit {
       ...product,
       createdAt: new Date().toISOString(),
       imageUrl: '',
-      lastOrdered: '',
     } as Product;
 
     this.productsService.createProduct(newProduct).subscribe({
       next: () => {
         console.log('Product created successfully');
+        this.toastService.success('Product created successfully');
         this.navigateToProductsList();
       },
       error: (err) => {
         console.error('Error creating product:', err);
+        this.toastService.error('Error creating product');
         this.error = 'Failed to create product';
       }
     });
@@ -263,6 +266,7 @@ export class ProductForm implements OnInit {
   private updateProduct(id: number, product: Partial<Product>) {
     if (!this.originalProduct) {
       this.error = 'Original product data not found';
+      this.toastService.error('Original product data not found');
       return;
     }
 
@@ -274,10 +278,12 @@ export class ProductForm implements OnInit {
     this.productsService.updateProduct(id, updatedProduct).subscribe({
       next: () => {
         console.log('Product updated successfully');
+        this.toastService.success('Product updated successfully');
         this.navigateToProductsList();
       },
       error: (err) => {
         console.error('Error updating product:', err);
+        this.toastService.error('Error updating product');
         this.error = 'Failed to update product';
       }
     });

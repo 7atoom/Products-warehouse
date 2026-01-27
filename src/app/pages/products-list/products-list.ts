@@ -5,6 +5,8 @@ import {ProductsFilterBar} from '../../components/products-filter-bar/products-f
 import {ProductsStats} from '../../components/products-stats/products-stats';
 import {Router} from '@angular/router';
 import {ViewStateService} from '../../services/view-state-service';
+import Swal from 'sweetalert2';
+
 
 
 @Component({
@@ -43,15 +45,36 @@ export class ProductsList implements OnInit {
   }
 
   deleteProduct(id: number) {
-    if (confirm('Are you sure you want to delete this product?')) {
-      this.productsService.deleteProduct(id).subscribe({
-        next: () => {
-          console.log('Product deleted successfully', id);
-        },
-        error: (err) => {
-          console.error('Failed to delete product', err);
-        }
-      });
-    }
+    Swal.fire({
+      title: 'Delete product?',
+      text: "You won't be able to undo this!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#286fef',
+      confirmButtonText: 'Yes, delete it',
+      cancelButtonText: 'Cancel'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.productsService.deleteProduct(id).subscribe({
+          next: () => {
+            Swal.fire(
+              'Deleted!',
+              'The product has been removed.',
+              'success'
+            );
+            console.log('Product deleted successfully', id);
+          },
+          error: (err) => {
+            Swal.fire(
+              'Error!',
+              'Something went wrong while deleting.',
+              'error'
+            );
+            console.error('Failed to delete product', err);
+          }
+        });
+      }
+    });
   }
 }
