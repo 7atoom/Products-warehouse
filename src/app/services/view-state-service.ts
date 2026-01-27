@@ -5,14 +5,14 @@ import { Injectable, signal } from '@angular/core';
 })
 export class ViewStateService {
   readonly currentView = signal<'list' | 'create' | 'edit' | 'details'>('list');
-  readonly editingProductId = signal<number | null>(null);
+  readonly editingProductId = signal<string | null>(null);
 
   setCreateView() {
     this.currentView.set('create');
     this.editingProductId.set(null);
   }
 
-  setEditView(productId: number) {
+  setEditView(productId: string) {
     this.currentView.set('edit');
     this.editingProductId.set(productId);
   }
@@ -22,7 +22,7 @@ export class ViewStateService {
     this.editingProductId.set(null);
   }
 
-  setDetailsView(productId: number) {
+  setDetailsView(productId: string) {
     this.currentView.set('details');
     this.editingProductId.set(productId);
   }

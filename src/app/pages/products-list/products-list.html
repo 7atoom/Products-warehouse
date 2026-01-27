@@ -114,7 +114,7 @@
                 <div class="flex items-center justify-end gap-3">
 
                   <button
-                    (click)="viewDetails(product.id)"
+                    (click)="viewDetails(product.id!)"
                     class="p-2 text-blue-600 hover:bg-blue-50 rounded-lg"
                     title="View details"
                     type="button"
@@ -123,7 +123,7 @@
                   </button>
 
                   <button
-                    (click)="editProduct(product.id)"
+                    (click)="editProduct(product.id!)"
                     class="p-2 text-gray-600 hover:bg-gray-100 rounded-lg"
                     title="Edit"
                     type="button"
@@ -132,7 +132,7 @@
                   </button>
 
                   <button
-                    (click)="deleteProduct(product.id)"
+                    (click)="deleteProduct(product.id!)"
                     class="p-2 text-red-600 hover:bg-red-50 rounded-lg"
                     title="Delete"
                     type="button"

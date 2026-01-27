@@ -27,13 +27,13 @@ export class ProductDetails implements OnInit {
     const id = this.route.snapshot.paramMap.get('id');
 
     if (id) {
-      this.loadProduct(+id);
+      this.loadProduct(id);
     } else {
       this.error.set('Invalid product ID');
     }
   }
 
-  loadProduct(id: number) {
+  loadProduct(id: string) {
     this.loading.set(true);
     this.error.set(null);
     this.product.set(null);
@@ -56,12 +56,12 @@ export class ProductDetails implements OnInit {
     this.router.navigate(['/products']);
   }
 
-  onEdit(id: string | number) {
-    this.viewStateService.setEditView(+id);
+  onEdit(id: string) {
+    this.viewStateService.setEditView(id);
     this.router.navigate(['/productForm']);
   }
 
-  onDelete(id: string | number) {
+  onDelete(id: string) {
     const currentProduct = this.product();
 
     if (!currentProduct) return;
@@ -78,7 +78,7 @@ export class ProductDetails implements OnInit {
       reverseButtons: true
     }).then((result) => {
       if (result.isConfirmed) {
-        this.productsService.deleteProduct(+id).subscribe({
+        this.productsService.deleteProduct(id).subscribe({
           next: () => {
             Swal.fire({
               title: 'Deleted!',

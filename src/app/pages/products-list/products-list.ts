@@ -30,21 +30,21 @@ export class ProductsList implements OnInit {
     this.productsService.loadProducts();
   }
 
-  viewDetails(id: number) {
+  viewDetails(id: string) {
     console.log('View product', id);
     this.router.navigate(['/products', id]).then(() =>
       console.log('Navigated to product details', id));
     this.viewStateService.setDetailsView(id);
   }
 
-  editProduct(id: number) {
+  editProduct(id: string) {
     console.log('Edit product', id);
     this.router.navigate(['/productForm']).then(() =>
       console.log('Navigated to edit product', id));
       this.viewStateService.setEditView(id);
   }
 
-  deleteProduct(id: number) {
+  deleteProduct(id: string) {
     Swal.fire({
       title: 'Delete product?',
       text: "You won't be able to undo this!",

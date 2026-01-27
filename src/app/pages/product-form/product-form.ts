@@ -96,7 +96,7 @@ export class ProductForm implements OnInit {
   }
 
 
-  loadProductForEdit(productId: number) {
+  loadProductForEdit(productId: string) {
     this.loading = true;
     this.error = null;
 
@@ -243,13 +243,23 @@ export class ProductForm implements OnInit {
   }
 
   private createProduct(product: Partial<Product>) {
-    const newProduct: Product = {
-      ...product,
-      createdAt: new Date().toISOString(),
+    const newProduct: Omit<Product, 'id'> = {
+      name: product.name || '',
+      description: product.description || '',
+      price: product.price || 0,
+      status: product.status || 'inStock',
+      supplier: product.supplier || null,
+      category: product.category || '',
       imageUrl: '',
-    } as Product;
+      createdAt: new Date().toISOString(),
+      productCode: product.productCode || '',
+      location: product.location || '',
+      quantity: product.quantity || 0,
+      minStock: product.minStock || 0,
+      lastRestocked: product.lastRestocked || null,
+    };
 
-    this.productsService.createProduct(newProduct).subscribe({
+    this.productsService.createProduct(newProduct as Product).subscribe({
       next: () => {
         console.log('Product created successfully');
         this.toastService.success('Product created successfully');
@@ -263,7 +273,7 @@ export class ProductForm implements OnInit {
     });
   }
 
-  private updateProduct(id: number, product: Partial<Product>) {
+  private updateProduct(id: string, product: Partial<Product>) {
     if (!this.originalProduct) {
       this.error = 'Original product data not found';
       this.toastService.error('Original product data not found');

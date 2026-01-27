@@ -288,6 +288,22 @@
       "createdAt": "2026-01-26T18:43:53.580Z",
       "imageUrl": "",
       "lastOrdered": ""
+    },
+    {
+      "id": "6794",
+      "name": "ASDCd",
+      "description": "dfdjkhf fdkahflk ",
+      "price": 100,
+      "status": "inStock",
+      "supplier": "Dell",
+      "category": "Electronics",
+      "imageUrl": "",
+      "createdAt": "2026-01-27T22:19:18.850Z",
+      "productCode": "MCB-1625",
+      "location": "Aisle 5",
+      "quantity": 6,
+      "minStock": 2,
+      "lastRestocked": "2026-01-01T00:00:00.000Z"
     }
   ],
   "categories": [
