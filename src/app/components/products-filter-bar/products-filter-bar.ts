@@ -34,19 +34,4 @@ export class ProductsFilterBar {
     this.statusFilter = target.value;
     this.productsService.selectedStatus.set(this.statusFilter);
   }
-
-  // statusOptions = [
-  //   { value: 'all', label: 'All Statuses' },
-  //   { value: 'inStock', label: 'In Stock' },
-  //   { value: 'lowStock', label: 'Low Stock' },
-  //   { value: 'outOfStock', label: 'Out of Stock' },
-  // ];
-
-  // categories = [
-  //   { value: 'all', label: 'All Categories' },
-  //   { value: 'electronics', label: 'Electronics' },
-  //   { value: 'clothing', label: 'Clothing' },
-  //   { value: 'books', label: 'Books' },
-  //   { value: 'furniture', label: 'Furniture' },
-  // ];
 }

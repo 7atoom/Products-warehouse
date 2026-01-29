@@ -61,13 +61,12 @@ export class ProductsService {
 
   readonly categories = computed(() => {
     const cats = this._products().map(p => p.category);
-    return ['All categories', ...Array.from(new Set(cats))]; // unique + 'all'
+    return ['All categories', ...Array.from(new Set(cats))];
   });
 
-  // 🔹 Dynamic statuses
   readonly statuses = computed(() => {
     const stats = this._products().map(p => p.status);
-    return ['All statuses', ...Array.from(new Set(stats))]; // unique + 'all'
+    return ['All statuses', ...Array.from(new Set(stats))];
   });
 
   loadProducts(): void {
@@ -122,6 +121,4 @@ export class ProductsService {
         })
       );
   }
-
-
 }

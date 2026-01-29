@@ -1,4 +1,4 @@
-import {Component, inject, OnInit, effect} from '@angular/core';
+import {Component, effect, inject, OnInit} from '@angular/core';
 import {Router} from '@angular/router';
 import {FormControl, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
 import {ProductsService} from '../../services/products-service';
@@ -9,7 +9,7 @@ import {ViewStateService} from '../../services/view-state-service';
 import {CommonModule} from '@angular/common';
 import {CategoriesService} from '../../services/categories-service';
 import {ToastService} from '../../services/toast-service';
-
+import {firstValueFrom} from 'rxjs';
 
 @Component({
   selector: 'app-product-form',
@@ -18,23 +18,27 @@ import {ToastService} from '../../services/toast-service';
   styles: ``,
 })
 export class ProductForm implements OnInit {
+  // injected services
   router = inject(Router);
   productsService = inject(ProductsService);
   categoriesService = inject(CategoriesService);
   viewStateService = inject(ViewStateService);
   toastService = inject(ToastService);
 
-
+  // signals from viewStateService
   mode = this.viewStateService.currentView;
   editingProductId = this.viewStateService.editingProductId;
+
+  // data signals
   categories = this.categoriesService.categories;
   categoriesLoading = this.categoriesService.loading;
 
+  // component state
   loading = false;
+  submitting = false;
   error: string | null = null;
 
-
-  // Store original product data
+  // to hold original product data when editing
   private originalProduct: Product | null = null;
 
   productForm = new FormGroup({
@@ -68,9 +72,10 @@ export class ProductForm implements OnInit {
       Validators.min(0.01),
       Validators.max(999999.99)
     ]),
+    // allow multiple digits in aisle number
     location: new FormControl('', [
       Validators.required,
-      Validators.pattern(/^Aisle\s\d$/i)
+      Validators.pattern(/^Aisle\s\d+$/i)
     ]),
     lastRestocked: new FormControl<string>(''),
   });
@@ -81,55 +86,48 @@ export class ProductForm implements OnInit {
       const currentMode = this.mode();
 
       if (currentMode === 'edit' && productId) {
-        this.loadProductForEdit(productId);
+        void this.loadProductForEdit(productId);
       }
     });
   }
 
   ngOnInit() {
-    // Load categories from API
     this.categoriesService.fetchCategories();
-
-    if (this.mode() === 'edit' && this.editingProductId()) {
-      this.loadProductForEdit(this.editingProductId()!);
-    }
   }
 
-
-  loadProductForEdit(productId: string) {
+  // use firstValueFrom to avoid manual subscriptions and potential leaks
+  private async loadProductForEdit(productId: string) {
     this.loading = true;
     this.error = null;
 
-    this.productsService.getProductById(productId).subscribe({
-      next: (product) => {
-        this.originalProduct = product;
-        this.populateForm(product);
-        this.loading = false;
-      },
-      error: (err) => {
-        console.error('Failed to load product', err);
-        this.error = 'Failed to load product for editing';
-        this.loading = false;
-      }
-    });
+    try {
+      const product = await firstValueFrom(this.productsService.getProductById(productId));
+      this.originalProduct = product;
+      this.populateForm(product);
+    } catch (err) {
+      console.error('Failed to load product', err);
+      this.error = 'Failed to load product for editing';
+      this.toastService.error(this.error);
+    } finally {
+      this.loading = false;
+    }
   }
 
   populateForm(product: Product) {
     this.productForm.patchValue({
-      name: product.name,
-      PCode: product.productCode,
-      category: product.category,
-      supplier: product.supplier,
-      description: product.description,
-      quantity: product.quantity,
-      minStock: product.minStock,
-      price: product.price,
-      location: product.location,
+      name: product.name ?? '',
+      PCode: product.productCode ?? '',
+      category: product.category ?? '',
+      supplier: product.supplier ?? '',
+      description: product.description ?? '',
+      quantity: product.quantity ?? 0,
+      minStock: product.minStock ?? 0,
+      price: product.price ?? 0,
+      location: product.location ?? '',
       lastRestocked: this.formatDateForInput(product.lastRestocked),
-    });
+    }, { emitEvent: false });
   }
 
-  // Convert ISO date string to yyyy-MM-dd format for date input
   private formatDateForInput(isoDate: string | null | undefined): string {
     if (!isoDate) return '';
     try {
@@ -139,45 +137,43 @@ export class ProductForm implements OnInit {
     }
   }
 
-  // Convert date string to ISO format
-  private formatDateToISO(dateStr: string | null | undefined): string {
-    if (!dateStr) return '';
+  private formatDateToISO(dateStr: string | null | undefined): string | null {
+    if (!dateStr) return null;
     try {
       return new Date(dateStr).toISOString();
     } catch {
-      return '';
+      return null;
     }
   }
 
-  // Calculate status based on quantity and minStock
   private calculateStatus(quantity: number, minStock: number): 'inStock' | 'lowStock' | 'outOfStock' {
     if (quantity === 0) return 'outOfStock';
     if (quantity <= minStock) return 'lowStock';
     return 'inStock';
   }
 
-  // Build product data from form values
   private buildProductData(): Partial<Product> {
-    const formValue = this.productForm.value;
-    const quantity = formValue.quantity ?? 0;
-    const minStock = formValue.minStock ?? 0;
+    const formValue = this.productForm.value as any;
+
+    const quantity = Number(formValue.quantity ?? 0);
+    const minStock = Number(formValue.minStock ?? 0);
+    const price = Number(formValue.price ?? 0);
 
     return {
-      name: formValue.name || '',
-      productCode: formValue.PCode || '',
-      category: formValue.category || '',
-      supplier: formValue.supplier || '',
-      description: formValue.description || '',
+      name: (formValue.name ?? '').toString().trim(),
+      productCode: (formValue.PCode ?? '').toString().trim(),
+      category: (formValue.category ?? '').toString().trim(),
+      supplier: (formValue.supplier ?? '').toString().trim() || null,
+      description: (formValue.description ?? '').toString().trim(),
       quantity,
       minStock,
-      price: formValue.price ?? 0,
-      location: formValue.location || '',
+      price,
+      location: (formValue.location ?? '').toString().trim(),
       status: this.calculateStatus(quantity, minStock),
-      lastRestocked: this.formatDateToISO(formValue.lastRestocked),
+      lastRestocked: this.formatDateToISO(formValue.lastRestocked) ?? null,
     };
   }
 
-  // Helper method to get error messages for template
   getErrorMessage(fieldName: string): string {
     const control = this.productForm.get(fieldName);
     if (!control?.errors || !control.touched) return '';
@@ -224,7 +220,7 @@ export class ProductForm implements OnInit {
     this.router.navigate(['/products']);
   }
 
-  handleSubmit() {
+  async handleSubmit() {
     this.productForm.markAllAsTouched();
 
     if (!this.productForm.valid) {
@@ -232,23 +228,32 @@ export class ProductForm implements OnInit {
       return;
     }
 
+    if (this.submitting) return;
+    this.submitting = true;
+
     const productData = this.buildProductData();
 
-    // Check if we're editing or creating
-    if (this.mode() === 'edit' && this.editingProductId()) {
-      this.updateProduct(this.editingProductId()!, productData);
-    } else {
-      this.createProduct(productData);
+    try {
+      if (this.mode() === 'edit' && this.editingProductId()) {
+        await this.updateProduct(this.editingProductId()!, productData);
+      } else {
+        await this.createProduct(productData);
+      }
+    } finally {
+      this.submitting = false;
     }
   }
 
-  private createProduct(product: Partial<Product>) {
+  private async createProduct(product: Partial<Product>) {
+    this.loading = true;
+    this.error = null;
+
     const newProduct: Omit<Product, 'id'> = {
       name: product.name || '',
       description: product.description || '',
       price: product.price || 0,
       status: product.status || 'inStock',
-      supplier: product.supplier || null,
+      supplier: product.supplier ?? null,
       category: product.category || '',
       imageUrl: '',
       createdAt: new Date().toISOString(),
@@ -256,47 +261,48 @@ export class ProductForm implements OnInit {
       location: product.location || '',
       quantity: product.quantity || 0,
       minStock: product.minStock || 0,
-      lastRestocked: product.lastRestocked || null,
+      lastRestocked: product.lastRestocked ?? null,
     };
 
-    this.productsService.createProduct(newProduct as Product).subscribe({
-      next: () => {
-        console.log('Product created successfully');
-        this.toastService.success('Product created successfully');
-        this.navigateToProductsList();
-      },
-      error: (err) => {
-        console.error('Error creating product:', err);
-        this.toastService.error('Error creating product');
-        this.error = 'Failed to create product';
-      }
-    });
+    try {
+      await firstValueFrom(this.productsService.createProduct(newProduct as any));
+      this.toastService.success('Product created successfully');
+      this.navigateToProductsList();
+    } catch (err) {
+      console.error('Error creating product:', err);
+      this.error = 'Failed to create product';
+      this.toastService.error(this.error);
+    } finally {
+      this.loading = false;
+    }
   }
 
-  private updateProduct(id: string, product: Partial<Product>) {
+  private async updateProduct(id: string, product: Partial<Product>) {
     if (!this.originalProduct) {
       this.error = 'Original product data not found';
-      this.toastService.error('Original product data not found');
+      this.toastService.error(this.error);
       return;
     }
+
+    this.loading = true;
+    this.error = null;
 
     const updatedProduct: Product = {
       ...this.originalProduct,
       ...product,
     };
 
-    this.productsService.updateProduct(id, updatedProduct).subscribe({
-      next: () => {
-        console.log('Product updated successfully');
-        this.toastService.success('Product updated successfully');
-        this.navigateToProductsList();
-      },
-      error: (err) => {
-        console.error('Error updating product:', err);
-        this.toastService.error('Error updating product');
-        this.error = 'Failed to update product';
-      }
-    });
+    try {
+      await firstValueFrom(this.productsService.updateProduct(id, updatedProduct));
+      this.toastService.success('Product updated successfully');
+      this.navigateToProductsList();
+    } catch (err) {
+      console.error('Error updating product:', err);
+      this.error = 'Failed to update product';
+      this.toastService.error(this.error);
+    } finally {
+      this.loading = false;
+    }
   }
 
   private navigateToProductsList() {
