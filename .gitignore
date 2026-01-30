@@ -42,3 +42,13 @@ __screenshots__/
 # System files
 .DS_Store
 Thumbs.db
+
+
+# Backend (json-server)
+server/node_modules
+server/.env
+server/package-lock.json
+
+# Logs
+*.log
+
