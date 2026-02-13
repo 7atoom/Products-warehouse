@@ -1,6 +1,6 @@
 import {Injectable, inject, signal, computed} from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import {catchError, Observable, tap} from 'rxjs';
+import {catchError, map, Observable, tap} from 'rxjs';
 import { Product } from '../utils/Product';
 
 @Injectable({
@@ -8,7 +8,7 @@ import { Product } from '../utils/Product';
 })
 export class ProductsService {
   private http = inject(HttpClient);
-  private apiBaseUrl = 'http://localhost:3000/products';
+  private apiBaseUrl = 'http://localhost:3000/api/products';
 
   private readonly _products = signal<Product[]>([]);
   private readonly _loading = signal<boolean>(false);
@@ -40,14 +40,28 @@ export class ProductsService {
   readonly selectedCategory = signal<string>('All categories');
   readonly selectedStatus = signal<string>('All statuses');
 
+  // Helper method to get product ID
+  getProductId(product: Product): string {
+    return product._id || '';
+  }
+
+  // Helper method to get category name
+  getCategoryName(product: Product): string {
+    if (typeof product.category === 'string') {
+      return product.category;
+    }
+    return product.category?.name || '';
+  }
+
   readonly filteredProducts = computed(() => {
     const category = this.selectedCategory();
     const search = this.searchTerm().toLowerCase();
     const products = this._products();
 
     return products.filter(product => {
+      const categoryName = this.getCategoryName(product);
       const matchesCategory =
-        category === 'All categories' || product.category === category;
+        category === 'All categories' || categoryName === category;
       const matchesStatus =
         this.selectedStatus() === 'All statuses' ||
         product.status === this.selectedStatus();
@@ -60,7 +74,7 @@ export class ProductsService {
   });
 
   readonly categories = computed(() => {
-    const cats = this._products().map(p => p.category);
+    const cats = this._products().map(p => this.getCategoryName(p));
     return ['All categories', ...Array.from(new Set(cats))];
   });
 
@@ -73,9 +87,9 @@ export class ProductsService {
     this._loading.set(true);
     this._error.set(null);
 
-    this.http.get<Product[]>(this.apiBaseUrl).subscribe({
-      next: (data) => {
-        this._products.set(data);
+    this.http.get<{ status: string; results: number; data: Product[] }>(this.apiBaseUrl).subscribe({
+      next: (response) => {
+        this._products.set(response.data);
         this._loading.set(false);
       },
       error: () => {
@@ -86,7 +100,8 @@ export class ProductsService {
   }
 
   getProductById(id: string): Observable<Product> {
-    return this.http.get<Product>(`${this.apiBaseUrl}/${id}`).pipe(
+    return this.http.get<{ status: string; data: Product }>(`${this.apiBaseUrl}/${id}`).pipe(
+      map(response => response.data),
       catchError(err => {
         this._error.set('Failed to load product details');
         throw err;
@@ -96,21 +111,28 @@ export class ProductsService {
 
   createProduct(product: Product): Observable<Product> {
     return this.http
-      .post<Product>(this.apiBaseUrl, product)
-      .pipe(tap(() => this.loadProducts()));
+      .post<{ status: string; data: Product }>(this.apiBaseUrl, product)
+      .pipe(
+        map(response => response.data),
+        tap(() => this.loadProducts())
+      );
   }
 
   updateProduct(id: string, product: Product): Observable<Product> {
     return this.http
-      .put<Product>(`${this.apiBaseUrl}/${id}`, product)
-      .pipe(tap(() => this.loadProducts()));
+      .patch<{ status: string; data: Product }>(`${this.apiBaseUrl}/${id}`, product)
+      .pipe(
+        map(response => response.data),
+        tap(() => this.loadProducts())
+      );
   }
 
   deleteProduct(id: string): Observable<void> {
     this._deleting.set(true);
     return this.http
-      .delete<void>(`${this.apiBaseUrl}/${id}`)
+      .delete<{ status: string; message?: string }>(`${this.apiBaseUrl}/${id}`)
       .pipe(
+        map(() => undefined),
         tap(() => {
           this.loadProducts();
           this._deleting.set(false);

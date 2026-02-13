@@ -1,5 +1,5 @@
 export interface Product {
-  id?: string;
+  _id?: string;
   name: string;
   description: string;
   price: number;
@@ -7,7 +7,10 @@ export interface Product {
   status: 'inStock' | 'lowStock' | 'outOfStock';
 
   supplier: string | null;
-  category: string;
+  category: {
+    _id: string;
+    name: string;
+  } | string; 
   imageUrl: string;
   createdAt: string;
   productCode: string;

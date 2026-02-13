@@ -25,9 +25,22 @@ export class ProductsList implements OnInit {
   loading = this.productsService.loading;
   error = this.productsService.error;
 
+  // Helper method to get product ID
+  getProductId(product: any): string {
+    return product._id || product.id || '';
+  }
+
+  // Helper method to get category name
+  getCategoryName(product: any): string {
+    if (typeof product.category === 'string') {
+      return product.category;
+    }
+    return product.category?.name || '';
+  }
 
   ngOnInit() {
     this.productsService.loadProducts();
+    console.log('Products loaded:', this.products());
   }
 
   viewDetails(id: string) {

@@ -70,7 +70,7 @@
               <option value="" disabled selected>
                 {{ categoriesLoading() ? 'Loading categories...' : 'Select a category' }}
               </option>
-              @for (cat of categories(); track cat.id) {
+              @for (cat of categories(); track cat._id) {
                 <option [value]="cat.name">{{ cat.name }}</option>
               }
             </select>

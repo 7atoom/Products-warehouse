@@ -1,14 +1,14 @@
 import {inject, Injectable, signal} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {Category} from '../utils/Category';
-import {Observable, tap, catchError, of} from 'rxjs';
+import {Observable, tap, catchError, of, map} from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
 })
 export class CategoriesService {
   private http = inject(HttpClient);
-  private apiBaseUrl = 'http://localhost:3000/categories';
+  private apiBaseUrl = 'http://localhost:3000/api/categories';
 
   // Signals for reactive state management
   private readonly _categories = signal<Category[]>([]);
@@ -21,21 +21,20 @@ export class CategoriesService {
   readonly error = this._error.asReadonly();
 
 
-  // Fallback categories in case API fails
-  private readonly fallbackCategories: Category[] = [
-    { id: '1', name: 'Electronics' },
-    { id: '2', name: 'Accessories' },
-    { id: '3', name: 'Furniture' },
-    { id: '4', name: 'Office Supplies' }
-  ];
+  fallbackCategories: Category[] = [
+    { _id: '1', name: 'Electronics' },
+    { _id: '2', name: 'Accessories' },
+    { _id: '3', name: 'Furniture' },
+    { _id: '4', name: 'Office Supplies' }
+  ];  
 
   fetchCategories(): void {
     this._loading.set(true);
     this._error.set(null);
 
-    this.http.get<Category[]>(this.apiBaseUrl).subscribe({
-      next: (data) => {
-        this._categories.set(data);
+    this.http.get<{ status: string; data: { categories: Category[] } }>(this.apiBaseUrl).subscribe({
+      next: (response) => {
+        this._categories.set(response.data.categories);
         this._loading.set(false);
       },
       error: (err) => {
@@ -52,7 +51,8 @@ export class CategoriesService {
     this._loading.set(true);
     this._error.set(null);
 
-    return this.http.get<Category[]>(this.apiBaseUrl).pipe(
+    return this.http.get<{ status: string; data: { categories: Category[] } }>(this.apiBaseUrl).pipe(
+      map(response => response.data.categories),
       tap((data) => {
         this._categories.set(data);
         this._loading.set(false);
@@ -69,7 +69,7 @@ export class CategoriesService {
 
   // Get category by ID
   getCategoryById(id: string): Category | undefined {
-    return this._categories().find(cat => cat.id === id);
+    return this._categories().find(cat => cat._id === id);
   }
 
   // Get category by name

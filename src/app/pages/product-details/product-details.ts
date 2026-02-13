@@ -23,6 +23,19 @@ export class ProductDetails implements OnInit {
   loading = signal<boolean>(false);
   error = signal<string | null>(null);
 
+  // Helper method to get product ID
+  getProductId(product: Product): string {
+    return product._id || '';
+  }
+
+  // Helper method to get category name
+  getCategoryName(product: Product): string {
+    if (typeof product.category === 'string') {
+      return product.category;
+    }
+    return product.category?.name || '';
+  }
+
   ngOnInit() {
     const id = this.route.snapshot.paramMap.get('id');
 
@@ -40,6 +53,7 @@ export class ProductDetails implements OnInit {
 
     this.productsService.getProductById(id).subscribe({
       next: (data) => {
+        console.log('Product loaded:', data);
         this.product.set(data);
         this.loading.set(false);
       },
@@ -65,6 +79,8 @@ export class ProductDetails implements OnInit {
     const currentProduct = this.product();
 
     if (!currentProduct) return;
+
+    const productId = this.getProductId(currentProduct);
 
     Swal.fire({
       title: `Delete "${currentProduct.name}"?`,

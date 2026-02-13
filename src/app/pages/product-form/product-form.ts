@@ -114,10 +114,15 @@ export class ProductForm implements OnInit {
   }
 
   populateForm(product: Product) {
+    // Extract category name if it's an object
+    const categoryValue = typeof product.category === 'string' 
+      ? product.category 
+      : product.category?.name ?? '';
+
     this.productForm.patchValue({
       name: product.name ?? '',
       PCode: product.productCode ?? '',
-      category: product.category ?? '',
+      category: categoryValue,
       supplier: product.supplier ?? '',
       description: product.description ?? '',
       quantity: product.quantity ?? 0,
@@ -248,28 +253,37 @@ export class ProductForm implements OnInit {
     this.loading = true;
     this.error = null;
 
-    const newProduct: Omit<Product, 'id'> = {
+    // Resolve category: if the form sends a name string, find the matching category ID
+    let categoryValue: string = (product.category as string) || '';
+    const categories = this.categoriesService.categories();
+    const matchedCategory = categories.find(c => c.name === categoryValue);
+    if (matchedCategory) {
+      categoryValue = matchedCategory._id || categoryValue;
+    }
+
+    const newProduct: any = {
       name: product.name || '',
       description: product.description || '',
       price: product.price || 0,
-      status: product.status || 'inStock',
       supplier: product.supplier ?? null,
-      category: product.category || '',
-      imageUrl: '',
-      createdAt: new Date().toISOString(),
+      category: categoryValue,
       productCode: product.productCode || '',
       location: product.location || '',
       quantity: product.quantity || 0,
       minStock: product.minStock || 0,
+      status: product.status || 'inStock',
       lastRestocked: product.lastRestocked ?? null,
     };
 
+    console.log('Sending create data:', newProduct);
+
     try {
-      await firstValueFrom(this.productsService.createProduct(newProduct as any));
+      await firstValueFrom(this.productsService.createProduct(newProduct));
       this.toastService.success('Product created successfully');
       this.navigateToProductsList();
-    } catch (err) {
+    } catch (err: any) {
       console.error('Error creating product:', err);
+      console.error('Server error body:', err?.error);
       this.error = 'Failed to create product';
       this.toastService.error(this.error);
     } finally {
@@ -287,17 +301,38 @@ export class ProductForm implements OnInit {
     this.loading = true;
     this.error = null;
 
-    const updatedProduct: Product = {
-      ...this.originalProduct,
-      ...product,
+    // Resolve category: if the form sends a name string, find the matching category ID
+    let categoryValue: string = product.category as string;
+    const categories = this.categoriesService.categories();
+    const matchedCategory = categories.find(c => c.name === categoryValue);
+    if (matchedCategory) {
+      categoryValue = matchedCategory._id || categoryValue;
+    }
+
+    // Only send fields the API expects
+    const updatedProduct: any = {
+      name: product.name,
+      productCode: product.productCode,
+      category: categoryValue,
+      supplier: product.supplier,
+      description: product.description,
+      quantity: product.quantity,
+      minStock: product.minStock,
+      price: product.price,
+      location: product.location,
+      status: product.status,
+      lastRestocked: product.lastRestocked,
     };
+
+    console.log('Sending update data:', updatedProduct);
 
     try {
       await firstValueFrom(this.productsService.updateProduct(id, updatedProduct));
       this.toastService.success('Product updated successfully');
       this.navigateToProductsList();
-    } catch (err) {
+    } catch (err: any) {
       console.error('Error updating product:', err);
+      console.error('Server error body:', err?.error);
       this.error = 'Failed to update product';
       this.toastService.error(this.error);
     } finally {
