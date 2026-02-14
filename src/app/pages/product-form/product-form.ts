@@ -1,15 +1,15 @@
-import {Component, effect, inject, OnInit} from '@angular/core';
-import {Router} from '@angular/router';
-import {FormControl, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
-import {ProductsService} from '../../services/products-service';
-import {Product} from '../../utils/Product';
-import {FormHeader} from '../../components/form-header/form-header';
-import {FormActions} from '../../components/form-actions/form-actions';
-import {ViewStateService} from '../../services/view-state-service';
-import {CommonModule} from '@angular/common';
-import {CategoriesService} from '../../services/categories-service';
-import {ToastService} from '../../services/toast-service';
-import {firstValueFrom} from 'rxjs';
+import { Component, effect, inject, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { ProductsService } from '../../services/products-service';
+import { Product } from '../../utils/Product';
+import { FormHeader } from '../../components/form-header/form-header';
+import { FormActions } from '../../components/form-actions/form-actions';
+import { ViewStateService } from '../../services/view-state-service';
+import { CommonModule } from '@angular/common';
+import { CategoriesService } from '../../services/categories-service';
+import { ToastService } from '../../services/toast-service';
+import { firstValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-product-form',
@@ -18,65 +18,45 @@ import {firstValueFrom} from 'rxjs';
   styles: ``,
 })
 export class ProductForm implements OnInit {
-  // injected services
   router = inject(Router);
   productsService = inject(ProductsService);
   categoriesService = inject(CategoriesService);
   viewStateService = inject(ViewStateService);
   toastService = inject(ToastService);
 
-  // signals from viewStateService
   mode = this.viewStateService.currentView;
   editingProductId = this.viewStateService.editingProductId;
 
-  // data signals
   categories = this.categoriesService.categories;
   categoriesLoading = this.categoriesService.loading;
 
-  // component state
   loading = false;
   submitting = false;
   error: string | null = null;
 
-  // to hold original product data when editing
   private originalProduct: Product | null = null;
 
   productForm = new FormGroup({
     name: new FormControl('', [
       Validators.required,
       Validators.minLength(2),
-      Validators.maxLength(100)
+      Validators.maxLength(100),
     ]),
     PCode: new FormControl('', [
       Validators.required,
-      Validators.pattern(/^[A-Z0-9]{2,10}-[0-9]{4}$/i)
+      Validators.pattern(/^[A-Z0-9]{2,10}-[0-9]{4}$/i),
     ]),
     category: new FormControl('', [Validators.required]),
-    supplier: new FormControl('', [
-      Validators.required,
-      Validators.minLength(2)
-    ]),
+    supplier: new FormControl('', [Validators.required, Validators.minLength(2)]),
     description: new FormControl('', [Validators.maxLength(500)]),
-    quantity: new FormControl(0, [
-      Validators.required,
-      Validators.min(0),
-      Validators.max(999999)
-    ]),
-    minStock: new FormControl(0, [
-      Validators.required,
-      Validators.min(0),
-      Validators.max(999999)
-    ]),
+    quantity: new FormControl(0, [Validators.required, Validators.min(0), Validators.max(999999)]),
+    minStock: new FormControl(0, [Validators.required, Validators.min(0), Validators.max(999999)]),
     price: new FormControl(0, [
       Validators.required,
       Validators.min(0.01),
-      Validators.max(999999.99)
+      Validators.max(999999.99),
     ]),
-    // allow multiple digits in aisle number
-    location: new FormControl('', [
-      Validators.required,
-      Validators.pattern(/^Aisle\s\d+$/i)
-    ]),
+    location: new FormControl('', [Validators.required, Validators.pattern(/^Aisle\s\d+$/i)]),
     lastRestocked: new FormControl<string>(''),
   });
 
@@ -95,7 +75,6 @@ export class ProductForm implements OnInit {
     this.categoriesService.fetchCategories();
   }
 
-  // use firstValueFrom to avoid manual subscriptions and potential leaks
   private async loadProductForEdit(productId: string) {
     this.loading = true;
     this.error = null;
@@ -114,23 +93,24 @@ export class ProductForm implements OnInit {
   }
 
   populateForm(product: Product) {
-    // Extract category name if it's an object
-    const categoryValue = typeof product.category === 'string' 
-      ? product.category 
-      : product.category?.name ?? '';
+    const categoryValue =
+      typeof product.category === 'string' ? product.category : (product.category?.name ?? '');
 
-    this.productForm.patchValue({
-      name: product.name ?? '',
-      PCode: product.productCode ?? '',
-      category: categoryValue,
-      supplier: product.supplier ?? '',
-      description: product.description ?? '',
-      quantity: product.quantity ?? 0,
-      minStock: product.minStock ?? 0,
-      price: product.price ?? 0,
-      location: product.location ?? '',
-      lastRestocked: this.formatDateForInput(product.lastRestocked),
-    }, { emitEvent: false });
+    this.productForm.patchValue(
+      {
+        name: product.name ?? '',
+        PCode: product.productCode ?? '',
+        category: categoryValue,
+        supplier: product.supplier ?? '',
+        description: product.description ?? '',
+        quantity: product.quantity ?? 0,
+        minStock: product.minStock ?? 0,
+        price: product.price ?? 0,
+        location: product.location ?? '',
+        lastRestocked: this.formatDateForInput(product.lastRestocked),
+      },
+      { emitEvent: false },
+    );
   }
 
   private formatDateForInput(isoDate: string | null | undefined): string {
@@ -151,7 +131,10 @@ export class ProductForm implements OnInit {
     }
   }
 
-  private calculateStatus(quantity: number, minStock: number): 'inStock' | 'lowStock' | 'outOfStock' {
+  private calculateStatus(
+    quantity: number,
+    minStock: number,
+  ): 'inStock' | 'lowStock' | 'outOfStock' {
     if (quantity === 0) return 'outOfStock';
     if (quantity <= minStock) return 'lowStock';
     return 'inStock';
@@ -187,8 +170,10 @@ export class ProductForm implements OnInit {
     const label = this.getFieldLabel(fieldName);
 
     if (errors['required']) return `${label} is required.`;
-    if (errors['minlength']) return `${label} must be at least ${errors['minlength'].requiredLength} characters.`;
-    if (errors['maxlength']) return `${label} cannot exceed ${errors['maxlength'].requiredLength} characters.`;
+    if (errors['minlength'])
+      return `${label} must be at least ${errors['minlength'].requiredLength} characters.`;
+    if (errors['maxlength'])
+      return `${label} cannot exceed ${errors['maxlength'].requiredLength} characters.`;
     if (errors['min']) return `${label} must be at least ${errors['min'].min}.`;
     if (errors['max']) return `${label} cannot exceed ${errors['max'].max}.`;
 
@@ -218,6 +203,23 @@ export class ProductForm implements OnInit {
       lastRestocked: 'Last Restocked',
     };
     return labels[fieldName] || fieldName;
+  }
+
+  private extractErrorMessages(err: any): string {
+    if (err?.error?.errors && Array.isArray(err.error.errors)) {
+      const errorMessages = err.error.errors
+        .map((error: any) => error.msg || error.message)
+        .filter(Boolean)
+        .join('. ');
+      return errorMessages || 'Validation failed';
+    }
+
+    // Check for single error message
+    if (err?.error?.message) {
+      return err.error.message;
+    }
+
+    return '';
   }
 
   onCancel() {
@@ -253,10 +255,9 @@ export class ProductForm implements OnInit {
     this.loading = true;
     this.error = null;
 
-    // Resolve category: if the form sends a name string, find the matching category ID
     let categoryValue: string = (product.category as string) || '';
     const categories = this.categoriesService.categories();
-    const matchedCategory = categories.find(c => c.name === categoryValue);
+    const matchedCategory = categories.find((c) => c.name === categoryValue);
     if (matchedCategory) {
       categoryValue = matchedCategory._id || categoryValue;
     }
@@ -284,8 +285,13 @@ export class ProductForm implements OnInit {
     } catch (err: any) {
       console.error('Error creating product:', err);
       console.error('Server error body:', err?.error);
-      this.error = 'Failed to create product';
-      this.toastService.error(this.error);
+
+      // Extract validation errors from API response
+      const errorMessages = this.extractErrorMessages(err);
+      this.error = errorMessages || 'Failed to create product';
+      if (this.error) {
+        this.toastService.error(this.error);
+      }
     } finally {
       this.loading = false;
     }
@@ -301,15 +307,13 @@ export class ProductForm implements OnInit {
     this.loading = true;
     this.error = null;
 
-    // Resolve category: if the form sends a name string, find the matching category ID
     let categoryValue: string = product.category as string;
     const categories = this.categoriesService.categories();
-    const matchedCategory = categories.find(c => c.name === categoryValue);
+    const matchedCategory = categories.find((c) => c.name === categoryValue);
     if (matchedCategory) {
       categoryValue = matchedCategory._id || categoryValue;
     }
 
-    // Only send fields the API expects
     const updatedProduct: any = {
       name: product.name,
       productCode: product.productCode,
@@ -333,8 +337,13 @@ export class ProductForm implements OnInit {
     } catch (err: any) {
       console.error('Error updating product:', err);
       console.error('Server error body:', err?.error);
-      this.error = 'Failed to update product';
-      this.toastService.error(this.error);
+
+      // Extract validation errors from API response
+      const errorMessages = this.extractErrorMessages(err);
+      this.error = errorMessages || 'Failed to update product';
+      if (this.error) {
+        this.toastService.error(this.error);
+      }
     } finally {
       this.loading = false;
     }
