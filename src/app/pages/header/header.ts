@@ -1,5 +1,5 @@
 import {Component, inject} from '@angular/core';
-import {ViewStateService} from '../../services/view-state-service';
+import {ViewStateService} from '../../core/services/view-state-service';
 import {Router} from '@angular/router';
 
 @Component({

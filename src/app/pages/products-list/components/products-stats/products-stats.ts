@@ -1,5 +1,5 @@
 import { Component , inject } from '@angular/core';
-import {ProductsService} from '../../services/products-service';
+import { ProductsService } from '../../../../core/services/products-service';
 import {CurrencyPipe} from '@angular/common';
 
 @Component({

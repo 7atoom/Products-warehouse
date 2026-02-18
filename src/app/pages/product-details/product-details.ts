@@ -1,8 +1,8 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { CommonModule, DatePipe, CurrencyPipe } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ProductsService } from '../../services/products-service';
-import { ViewStateService } from '../../services/view-state-service';
+import { ProductsService } from '../../core/services/products-service';
+import { ViewStateService } from '../../core/services/view-state-service';
 import { Product } from '../../utils/Product';
 import Swal from 'sweetalert2';
 

@@ -1,6 +1,6 @@
 import {inject, Injectable, signal} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
-import {Category} from '../utils/Category';
+import { Category } from '../../utils/Category';
 import {Observable, tap, catchError, of, map} from 'rxjs';
 
 @Injectable({

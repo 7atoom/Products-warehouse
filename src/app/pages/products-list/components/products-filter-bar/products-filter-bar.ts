@@ -1,7 +1,7 @@
 import {Component, inject} from '@angular/core';
 import {FormsModule} from '@angular/forms';
-import {ProductsService} from '../../services/products-service';
-import {CategoriesService} from '../../services/categories-service';
+import { ProductsService } from '../../../../core/services/products-service';
+import {CategoriesService} from '../../../../core/services/categories-service';
 
 @Component({
   selector: 'app-products-filter-bar',

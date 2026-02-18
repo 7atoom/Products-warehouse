@@ -1,14 +1,14 @@
 import { Component, effect, inject, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { ProductsService } from '../../services/products-service';
+import { ProductsService } from '../../core/services/products-service';
 import { Product } from '../../utils/Product';
-import { FormHeader } from '../../components/form-header/form-header';
-import { FormActions } from '../../components/form-actions/form-actions';
-import { ViewStateService } from '../../services/view-state-service';
+import { FormHeader } from '../../core/components/form-header/form-header';
+import { FormActions } from '../../core/components/form-actions/form-actions';
+import { ViewStateService } from '../../core/services/view-state-service';
 import { CommonModule } from '@angular/common';
-import { CategoriesService } from '../../services/categories-service';
-import { ToastService } from '../../services/toast-service';
+import { CategoriesService } from '../../core/services/categories-service';
+import { ToastService } from '../../core/services/toast-service';
 import { firstValueFrom } from 'rxjs';
 
 @Component({

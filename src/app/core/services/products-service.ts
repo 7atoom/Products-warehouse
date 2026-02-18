@@ -1,7 +1,7 @@
 import {Injectable, inject, signal, computed} from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import {catchError, map, Observable, tap} from 'rxjs';
-import { Product } from '../utils/Product';
+import { Product } from '../../utils/Product';
 
 @Injectable({
   providedIn: 'root',

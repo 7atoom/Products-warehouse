@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import {ActivatedRoute, NavigationEnd, Router, RouterOutlet} from '@angular/router';
 import {Header} from './pages/header/header';
 import {filter, map, mergeMap} from 'rxjs';
-import {ToastComponent} from './components/toast/toast';
+import { ToastComponent } from './core/components/toast/toast';
 
 @Component({
   selector: 'app-root',
