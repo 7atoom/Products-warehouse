@@ -8,9 +8,9 @@ WORKDIR /app
 COPY package.json package-lock.json ./
 RUN npm ci
 
-# Copy sources and build
+# Copy sources and build (production is the default configuration)
 COPY . .
-RUN npm run build -- --configuration development
+RUN npm run build -- --configuration production
 
 # --- Production stage ---
 FROM nginx:stable-alpine
